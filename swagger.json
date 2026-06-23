@@ -1,0 +1,77 @@
+{
+    "openapi": "3.0.0",
+    "info":{
+        "version": "1.0.0",
+        "description": "API for e-commerce application",
+        "title":"E-commerce API"
+    },
+    "servers":[
+        {
+            "url":"http://localhost:3200"
+        }
+    ],
+    "components":{
+        "securitySchemes": {
+                            "JWT": {
+                                      "type": "apiKey",
+                                      "name": "Authorization",
+                                      "in": "header"
+                                    }
+                            }
+    },
+    "paths":{
+        "/api/users/login":{
+            "post":{
+                "tags":["users"],
+                "summary":"login",
+                "description":"user login to get token",
+                "requestBody":{
+                    "content": {
+                        "application/json":{ 
+                        "schema":{
+                            "type":"object",
+                            "properties":{
+                                "email":{
+                                    "type":"string"
+                                },
+                                "password":{
+                                    "type":"string"
+                                }
+                            }
+                        }
+                    }}     
+                },
+                "responses":{
+                    "200":{
+                        "description":"OK"
+                    },
+                    "400":{
+                        "description":"Incorrect Credentials"
+                    }
+                }
+            }
+
+        },
+        "/api/products/":{
+             "get":{
+                "tags":["products"],
+                "summary":"Get products",
+                "description":"User will get all products",
+                "security":[{"JWT":{} }],
+                "responses":{
+                    "200":{
+                        "description":"OK"
+                    },
+                    "400":{
+                        "description":"Incorrect Credentials"
+                    }
+                }
+            }
+
+        },
+        "/api/cart":{
+
+        }
+    }
+}
+    

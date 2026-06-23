@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ecom Storefront</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="#home">Northstar Goods</a>
+        <nav class="main-nav">
+          <a href="#home">Home</a>
+          <a href="#shop" data-auth-only>Shop</a>
+          <a href="#order" data-auth-only>Order</a>
+          <a href="#profile" data-auth-only>Profile</a>
+          <a href="#admin" data-admin-only>Admin</a>
+        </nav>
+        <div class="nav-actions">
+          <button id="openRegisterBtn" class="ghost-button" type="button">
+            Register
+          </button>
+          <button id="openLoginBtn" type="button">Login</button>
+          <button id="logoutBtn" class="ghost-button is-hidden" type="button">
+            Logout
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <section class="page active" data-route="home">
+          <section class="hero">
+            <div class="hero__copy">
+              <p class="eyebrow">Landing page first</p>
+              <h1>Shop, manage, and order from one role-aware storefront.</h1>
+              <p class="hero__text">
+                Buyers get a profile, cart, order history, and product likes.
+                Admins get a full product CRUD panel after login.
+              </p>
+              <div class="hero__actions hero__actions--guest">
+                <button id="heroRegisterBtn" class="ghost-button" type="button">
+                  Register
+                </button>
+                <button id="heroLoginBtn" type="button">Login</button>
+              </div>
+              <div id="heroLoggedInActions" class="hero__actions is-hidden">
+                <a class="ghost-button" href="#shop">Open Shop</a>
+                <a href="#profile" class="solid-link">Go to Profile</a>
+              </div>
+            </div>
+            <div class="hero__panel">
+              <p class="eyebrow">Session</p>
+              <h2 id="sessionTitle">Guest mode</h2>
+              <p id="sessionSubtitle" class="muted">
+                Login or register to unlock products, orders, likes, and profile tools.
+              </p>
+              <div class="stat-grid">
+                <article class="stat-card">
+                  <span>Products</span>
+                  <strong id="productCount">0</strong>
+                </article>
+                <article class="stat-card">
+                  <span>Cart Items</span>
+                  <strong id="cartCount">0</strong>
+                </article>
+                <article class="stat-card">
+                  <span>Orders</span>
+                  <strong id="orderCount">0</strong>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <section class="surface feature-strip">
+            <article>
+              <p class="eyebrow">Buyer</p>
+              <h3>Profile page</h3>
+              <p>View cart items, order history, and cancel placed orders.</p>
+            </article>
+            <article>
+              <p class="eyebrow">Flow</p>
+              <h3>Order page</h3>
+              <p>Click order on a product and move into a dedicated checkout screen.</p>
+            </article>
+            <article>
+              <p class="eyebrow">Admin</p>
+              <h3>Product CRUD</h3>
+              <p>Create, edit, and delete products from an admin-only workspace.</p>
+            </article>
+          </section>
+        </section>
+
+        <section class="page" data-route="shop">
+          <section class="surface section-head">
+            <div>
+              <p class="eyebrow">Store</p>
+              <h2>Browse products</h2>
+            </div>
+            <button id="refreshShopBtn" class="ghost-button" type="button">
+              Refresh
+            </button>
+          </section>
+
+          <section class="surface">
+            <form id="filterForm" class="filter-form">
+              <label>
+                <span>Min Price</span>
+                <input type="number" name="minPrice" min="0" placeholder="0" />
+              </label>
+              <label>
+                <span>Max Price</span>
+                <input type="number" name="maxPrice" min="0" placeholder="5000" />
+              </label>
+              <label>
+                <span>Category</span>
+                <input type="text" name="category" placeholder="Clothing" />
+              </label>
+              <div class="filter-actions">
+                <button type="submit">Apply</button>
+                <button id="clearFiltersBtn" class="ghost-button" type="button">
+                  Clear
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section id="productsGrid" class="product-grid"></section>
+        </section>
+
+        <section class="page" data-route="order">
+          <section class="surface section-head">
+            <div>
+              <p class="eyebrow">Order Page</p>
+              <h2>Review cart and place order</h2>
+            </div>
+            <button id="refreshOrderBtn" class="ghost-button" type="button">
+              Refresh Cart
+            </button>
+          </section>
+
+          <div class="two-column">
+            <section class="surface">
+              <div class="surface__header">
+                <div>
+                  <p class="eyebrow">Selected product</p>
+                  <h3>Buy now focus</h3>
+                </div>
+              </div>
+              <div id="selectedProductPanel" class="empty-state">
+                Click an order button on any product to jump here with that item.
+              </div>
+            </section>
+
+            <section class="surface">
+              <div class="surface__header">
+                <div>
+                  <p class="eyebrow">Cart</p>
+                  <h3>Items ready to order</h3>
+                </div>
+              </div>
+              <div id="orderCartSummary" class="summary-box"></div>
+              <div id="orderCartList" class="list-stack"></div>
+              <button id="placeOrderBtn" class="wide-button" type="button">
+                Place Order
+              </button>
+            </section>
+          </div>
+        </section>
+
+        <section class="page" data-route="profile">
+          <section class="surface section-head">
+            <div>
+              <p class="eyebrow">Profile</p>
+              <h2>Your account, cart, and order history</h2>
+            </div>
+            <button id="refreshProfileBtn" class="ghost-button" type="button">
+              Refresh Profile
+            </button>
+          </section>
+
+          <div class="three-panel">
+            <section class="surface">
+              <div class="surface__header">
+                <div>
+                  <p class="eyebrow">User</p>
+                  <h3>Profile details</h3>
+                </div>
+              </div>
+              <div id="profileSummary" class="detail-list"></div>
+            </section>
+
+            <section class="surface">
+              <div class="surface__header">
+                <div>
+                  <p class="eyebrow">Cart</p>
+                  <h3>Current cart items</h3>
+                </div>
+              </div>
+              <div id="profileCartList" class="list-stack"></div>
+            </section>
+
+            <section class="surface">
+              <div class="surface__header">
+                <div>
+                  <p class="eyebrow">Orders</p>
+                  <h3>Order history</h3>
+                </div>
+              </div>
+              <div id="orderHistoryList" class="list-stack"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="page" data-route="admin">
+          <section class="surface section-head">
+            <div>
+              <p class="eyebrow">Admin Panel</p>
+              <h2>Manage products</h2>
+            </div>
+            <button id="resetAdminFormBtn" class="ghost-button" type="button">
+              New Product
+            </button>
+          </section>
+
+          <div class="two-column">
+            <section class="surface">
+              <div class="surface__header">
+                <div>
+                  <p class="eyebrow">CRUD</p>
+                  <h3 id="adminFormTitle">Create product</h3>
+                </div>
+              </div>
+              <form id="adminProductForm" class="stacked-form">
+                <label>
+                  <span>Name</span>
+                  <input type="text" name="name" required />
+                </label>
+                <label>
+                  <span>Description</span>
+                  <textarea name="desc" rows="4" required></textarea>
+                </label>
+                <label>
+                  <span>Image URL</span>
+                  <input type="text" name="imageUrl" placeholder="/uploads/file.jpg or https://..." />
+                </label>
+                <label>
+                  <span>Price</span>
+                  <input type="number" name="price" min="0" required />
+                </label>
+                <label>
+                  <span>Category</span>
+                  <input type="text" name="category" required />
+                </label>
+                <label>
+                  <span>Sizes</span>
+                  <input type="text" name="sizes" placeholder="S,M,L" />
+                </label>
+                <label>
+                  <span>Stock</span>
+                  <input type="number" name="inStock" min="0" required />
+                </label>
+                <button type="submit">Save Product</button>
+              </form>
+            </section>
+
+            <section class="surface">
+              <div class="surface__header">
+                <div>
+                  <p class="eyebrow">Inventory</p>
+                  <h3>Existing products</h3>
+                </div>
+              </div>
+              <div id="adminProductList" class="list-stack"></div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="authModal" class="modal is-hidden" aria-hidden="true">
+      <div class="modal__backdrop" data-close-modal></div>
+      <div class="modal__panel">
+        <button class="modal__close ghost-button" data-close-modal type="button">
+          Close
+        </button>
+        <div class="auth-switcher">
+          <button id="showLoginTabBtn" class="tab-button active" type="button">
+            Login
+          </button>
+          <button id="showRegisterTabBtn" class="tab-button" type="button">
+            Register
+          </button>
+        </div>
+
+        <form id="loginForm" class="stacked-form auth-form">
+          <h3>Login</h3>
+          <label>
+            <span>Email</span>
+            <input type="email" name="email" required />
+          </label>
+          <label>
+            <span>Password</span>
+            <input type="password" name="password" required />
+          </label>
+          <button type="submit">Login</button>
+        </form>
+
+        <form id="signupForm" class="stacked-form auth-form is-hidden">
+          <h3>Register</h3>
+          <label>
+            <span>Name</span>
+            <input type="text" name="name" required />
+          </label>
+          <label>
+            <span>Email</span>
+            <input type="email" name="email" required />
+          </label>
+          <label>
+            <span>Password</span>
+            <input
+              type="password"
+              name="password"
+              placeholder="8-12 chars with number and symbol"
+              required
+            />
+          </label>
+          <label>
+            <span>Address</span>
+            <input type="text" name="address" required />
+          </label>
+          <label>
+            <span>Contact</span>
+            <input type="tel" name="contact" required />
+          </label>
+          <label>
+            <span>Role</span>
+            <select name="type" required>
+              <option value="buyer">buyer</option>
+              <option value="admin">admin</option>
+              <option value="seller">seller</option>
+            </select>
+          </label>
+          <button type="submit">Create Account</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="toastStack" class="toast-stack"></div>
+
+    <template id="productCardTemplate">
+      <article class="product-card">
+        <div class="product-card__visual">
+          <img class="product-image" alt="" />
+        </div>
+        <div class="product-card__body">
+          <div class="product-card__header">
+            <div>
+              <p class="product-category"></p>
+              <h3 class="product-name"></h3>
+            </div>
+            <p class="product-price"></p>
+          </div>
+          <p class="product-desc"></p>
+          <div class="chip-row product-sizes"></div>
+          <div class="product-meta">
+            <span class="product-stock"></span>
+            <span class="product-likes"></span>
+          </div>
+          <div class="inline-actions">
+            <label>
+              <span>Qty</span>
+              <input class="qty-input" type="number" min="1" value="1" />
+            </label>
+            <button class="add-cart-btn" type="button">Add to Cart</button>
+            <button class="order-now-btn ghost-button" type="button">Order</button>
+          </div>
+          <div class="inline-actions">
+            <label>
+              <span>Rate</span>
+              <select class="rating-input">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5" selected>5</option>
+              </select>
+            </label>
+            <button class="rate-btn" type="button">Rate</button>
+            <button class="like-btn ghost-button" type="button">Like</button>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
